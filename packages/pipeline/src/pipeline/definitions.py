@@ -21,7 +21,11 @@ all_assets: list = []
 all_checks: list = []
 all_schedules: list = []
 
+_CLIENT_FILTER = os.environ.get("PLATFORM_CLIENT_ID")
+
 for _client_id in list_clients():
+    if _CLIENT_FILTER and _client_id != _CLIENT_FILTER:
+        continue
     _cfg = load_client_config(_client_id)
 
     _bronze = make_bronze_assets(_cfg)

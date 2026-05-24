@@ -9,8 +9,13 @@ _SQL_DIR = Path(__file__).parents[3] / "sql" / "gold"
 
 
 def _run_gold_sql(postgres: PostgresResource, schema_prefix: str, sql_file: str) -> None:
-    sql = (_SQL_DIR / sql_file).read_text().replace("{schema_prefix}", schema_prefix)
-    postgres.execute_ddl(sql)
+    postgres.ensure_schema(f"gold_{schema_prefix}")
+    full_sql = (_SQL_DIR / sql_file).read_text().replace("{schema_prefix}", schema_prefix)
+    # Execute each statement separately — gold SQL has DROP + CREATE which must not share a txn
+    for stmt in full_sql.split(";"):
+        stmt = stmt.strip()
+        if stmt:
+            postgres.execute_ddl(stmt)
 
 
 def make_gold_assets(cfg: ClientConfig) -> list:

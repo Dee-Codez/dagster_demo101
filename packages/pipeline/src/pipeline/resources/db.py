@@ -22,6 +22,15 @@ class PostgresResource(ConfigurableResource):
     def reader(self) -> PostgresReader:
         return PostgresReader(self.engine)
 
+    def ensure_schema(self, schema_name: str) -> None:
+        # CREATE SCHEMA IF NOT EXISTS has a known race under concurrent execution.
+        # Running it in isolation and swallowing the duplicate error is the safe path.
+        try:
+            with self.engine.begin() as conn:
+                conn.execute(sa.text(f"CREATE SCHEMA IF NOT EXISTS {schema_name}"))
+        except Exception:
+            pass
+
     def execute_ddl(self, sql: str) -> None:
         with self.engine.begin() as conn:
             conn.execute(sa.text(sql))

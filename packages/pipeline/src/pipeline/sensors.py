@@ -22,9 +22,16 @@ def make_silver_freshness_checks(cfg: ClientConfig) -> list:
             name=f"silver_{prefix}_{table}_freshness",
                     )
         def _check(postgres: PostgresResource) -> AssetCheckResult:
-            result = postgres.reader.scalar(
-                f'SELECT MAX(silver_loaded_at) FROM "{silver_schema}"."{table}"'
-            )
+            try:
+                result = postgres.reader.scalar(
+                    f'SELECT MAX(silver_loaded_at) FROM "{silver_schema}"."{table}"'
+                )
+            except Exception:
+                return AssetCheckResult(
+                    passed=False,
+                    severity=AssetCheckSeverity.WARN,
+                    metadata={"reason": "table does not exist — materialise the asset first"},
+                )
 
             if result is None:
                 return AssetCheckResult(

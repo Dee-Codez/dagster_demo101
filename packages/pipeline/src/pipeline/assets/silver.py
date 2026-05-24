@@ -21,8 +21,14 @@ _PIPELINE_VERSION = "0.1.0"
 
 
 def _ensure_table(postgres: PostgresResource, schema_prefix: str, table: str) -> None:
-    ddl = (_SQL_DIR / f"{table}.sql").read_text().replace("{schema_prefix}", schema_prefix)
-    postgres.execute_ddl(ddl)
+    schema = f"silver_{schema_prefix}"
+    postgres.ensure_schema(schema)
+    full_ddl = (_SQL_DIR / f"{table}.sql").read_text().replace("{schema_prefix}", schema_prefix)
+    table_ddl = "\n".join(
+        line for line in full_ddl.splitlines()
+        if not line.startswith("CREATE SCHEMA")
+    )
+    postgres.execute_ddl(table_ddl)
 
 
 def make_silver_assets(cfg: ClientConfig) -> list:
@@ -44,16 +50,15 @@ def make_silver_assets(cfg: ClientConfig) -> list:
             df = postgres.reader.read(schema=bronze_schema, table=table)
             df = cleanse(df, key_col)
 
-            df["silver_loaded_at"] = pd.Timestamp.utcnow()
+            df["silver_loaded_at"] = pd.Timestamp.now(tz="UTC")
             df["pipeline_version"] = _PIPELINE_VERSION
             df["source_system"] = f"oracle_{cfg.postgres_schema_prefix}"
 
             engine = postgres.engine
             with engine.begin() as conn:
-                conn.execute(
-                    sa.text(f'TRUNCATE TABLE IF EXISTS "{silver_schema}"."{table}"')
-                )
-                df.to_sql(table, conn, schema=silver_schema, if_exists="append", index=False)
+                conn.execute(sa.text(f'TRUNCATE TABLE "{silver_schema}"."{table}"'))
+            with engine.begin() as conn:
+                df.to_sql(table, conn, schema=silver_schema, if_exists="append", index=False, method="multi")
 
             context.add_output_metadata({"rows_written": len(df)})
 

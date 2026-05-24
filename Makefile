@@ -1,4 +1,4 @@
-.PHONY: install seed dev test lint fmt up down
+.PHONY: install seed dev dev-acme test lint fmt up down
 
 up:
 	docker compose up -d
@@ -14,6 +14,9 @@ seed:
 
 dev:
 	poetry run dagster dev -m pipeline.definitions
+
+dev-acme:
+	PLATFORM_CLIENT_ID=acme poetry run dagster dev -m pipeline.definitions
 
 test:
 	poetry run pytest packages/connectors/tests packages/pipeline/tests -v
