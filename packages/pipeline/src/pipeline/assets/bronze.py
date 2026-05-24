@@ -1,10 +1,8 @@
-from __future__ import annotations
-
 import hashlib
 from pathlib import Path
 
 import pandas as pd
-from dagster import AssetCheckResult, AssetCheckSeverity, AssetExecutionContext, asset, asset_check
+from dagster import AssetCheckResult, AssetCheckSeverity, asset, asset_check
 
 from connectors import get_connector
 
@@ -40,12 +38,8 @@ def make_bronze_assets(cfg: ClientConfig) -> list:
     prefix = cfg.postgres_schema_prefix
 
     def _make_asset(table: str, key_col: str):
-        @asset(
-            name=f"bronze_{prefix}_{table}",
-            group_name=f"bronze_{prefix}",
-            required_resource_keys={"postgres"},
-        )
-        def _bronze(context: AssetExecutionContext, postgres: PostgresResource) -> None:
+        @asset(name=f"bronze_{prefix}_{table}", group_name=f"bronze_{prefix}")
+        def _bronze(context, postgres: PostgresResource) -> None:
             _ensure_table(postgres, cfg.postgres_schema_prefix, table)
 
             with get_connector(cfg.source.connector_type, cfg.source.dsn) as conn:
@@ -78,11 +72,7 @@ def make_bronze_checks(cfg: ClientConfig) -> list:
     def _make_check(table: str):
         schema = f"bronze_{prefix}"
 
-        @asset_check(
-            asset=f"bronze_{prefix}_{table}",
-            name=f"bronze_{prefix}_{table}_row_count",
-            required_resource_keys={"postgres"},
-        )
+        @asset_check(asset=f"bronze_{prefix}_{table}", name=f"bronze_{prefix}_{table}_row_count")
         def _check(postgres: PostgresResource) -> AssetCheckResult:
             count = postgres.reader.scalar(f'SELECT COUNT(*) FROM "{schema}"."{table}"')
             return AssetCheckResult(

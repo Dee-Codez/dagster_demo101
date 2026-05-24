@@ -1,10 +1,8 @@
-from __future__ import annotations
-
 from pathlib import Path
 
 import pandas as pd
 import sqlalchemy as sa
-from dagster import AssetExecutionContext, AssetKey, asset
+from dagster import AssetKey, asset
 
 from ..config.loader import ClientConfig
 from ..resources.db import PostgresResource
@@ -39,9 +37,8 @@ def make_silver_assets(cfg: ClientConfig) -> list:
             name=f"silver_{prefix}_{table}",
             group_name=f"silver_{prefix}",
             deps=[AssetKey(f"bronze_{prefix}_{table}")],
-            required_resource_keys={"postgres"},
         )
-        def _silver(context: AssetExecutionContext, postgres: PostgresResource) -> None:
+        def _silver(context, postgres: PostgresResource) -> None:
             _ensure_table(postgres, cfg.postgres_schema_prefix, table)
 
             df = postgres.reader.read(schema=bronze_schema, table=table)

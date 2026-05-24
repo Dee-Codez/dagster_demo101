@@ -3,10 +3,10 @@ name = "data-platform"
 version = "0.1.0"
 description = "Financial services data platform"
 authors = []
-packages = []
+package-mode = false
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = ">=3.11,<3.15"
 connectors = {path = "packages/connectors", develop = true}
 pipeline = {path = "packages/pipeline", develop = true}
 

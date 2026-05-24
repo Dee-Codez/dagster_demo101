@@ -154,8 +154,8 @@ def seed(n_customers: int, out_path: Path) -> None:
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--customers", type=int, default=2_000)
-    # default resolves to packages/pipeline/data/source.db regardless of CWD
-    _default_out = Path(__file__).parent.parent / "data" / "source.db"
+    # default resolves to data-platform/data/source.db (root CWD when make seed runs)
+    _default_out = Path(__file__).parents[3] / "data" / "source.db"
     parser.add_argument("--out", type=Path, default=_default_out)
     args = parser.parse_args()
     seed(args.customers, args.out)

@@ -13,7 +13,7 @@ seed:
 	poetry run python packages/pipeline/scripts/seed_source.py
 
 dev:
-	cd packages/pipeline && poetry run dagster dev -m pipeline.definitions --working-directory .
+	poetry run dagster dev -m pipeline.definitions
 
 test:
 	poetry run pytest packages/connectors/tests packages/pipeline/tests -v

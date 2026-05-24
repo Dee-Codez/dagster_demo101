@@ -7,9 +7,9 @@ packages = [{include = "pipeline", from = "src"}]
 include = ["sql/**/*.sql", "config/**/*.yaml"]
 
 [tool.poetry.dependencies]
-python = "^3.11"
-dagster = "^1.9"
-dagster-webserver = "^1.9"
+python = ">=3.11,<3.15"
+dagster = ">=1.12.9"
+dagster-webserver = ">=1.12.9"
 pandas = "^2.2"
 sqlalchemy = "^2.0"
 psycopg2-binary = "^2.9"

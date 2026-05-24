@@ -20,8 +20,7 @@ def make_silver_freshness_checks(cfg: ClientConfig) -> list:
         @asset_check(
             asset=AssetKey(f"silver_{prefix}_{table}"),
             name=f"silver_{prefix}_{table}_freshness",
-            required_resource_keys={"postgres"},
-        )
+                    )
         def _check(postgres: PostgresResource) -> AssetCheckResult:
             result = postgres.reader.scalar(
                 f'SELECT MAX(silver_loaded_at) FROM "{silver_schema}"."{table}"'
