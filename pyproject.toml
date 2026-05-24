@@ -28,3 +28,4 @@ select = ["E", "F", "I", "UP"]
 
 [tool.pytest.ini_options]
 markers = ["integration: requires a running Postgres instance"]
+addopts = "--import-mode=importlib"

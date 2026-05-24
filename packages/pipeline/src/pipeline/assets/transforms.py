@@ -27,7 +27,7 @@ def deduplicate(df: pd.DataFrame, key_col: str) -> pd.DataFrame:
 def fill_nulls(df: pd.DataFrame) -> pd.DataFrame:
     for col in df.columns:
         if col in _NUMERIC_FILL_COLS:
-            df[col] = df[col].fillna(0.0)
+            df[col] = df[col].fillna(0.0).infer_objects(copy=False)
     return df
 
 

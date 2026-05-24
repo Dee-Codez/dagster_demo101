@@ -7,3 +7,5 @@ dist/
 packages/pipeline/data/
 *.db
 .dagster/
+temp*/
+.tmp*/

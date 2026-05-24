@@ -69,6 +69,9 @@ def test_cdc_no_update_on_identical_data(pg_engine, pg_test_schema):
                 customer_id   TEXT NOT NULL PRIMARY KEY,
                 full_name     TEXT,
                 segment       TEXT,
+                onboarded_at  TIMESTAMPTZ,
+                country       TEXT,
+                email         TEXT,
                 row_hash      TEXT NOT NULL,
                 ingested_at   TIMESTAMPTZ DEFAULT NOW(),
                 source_run_id TEXT NOT NULL
