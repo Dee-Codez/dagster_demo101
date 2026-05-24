@@ -1,0 +1,9 @@
+display_name: ACME Financial
+source:
+  connector_type: sqlite
+  dsn: "sqlite:///data/source.db"
+  queries: [customers, accounts, transactions, risk_events]
+postgres_schema_prefix: acme
+schedules:
+  bronze_refresh: "0 2 * * *"
+pipelines: [customers, accounts, transactions, risk_events]

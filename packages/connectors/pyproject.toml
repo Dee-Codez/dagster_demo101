@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "connectors"
+version = "0.1.0"
+description = "Reusable database connectors"
+authors = []
+packages = [{include = "connectors", from = "src"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+pandas = "^2.2"
+sqlalchemy = "^2.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

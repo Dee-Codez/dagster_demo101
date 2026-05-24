@@ -1,0 +1,30 @@
+[tool.poetry]
+name = "data-platform"
+version = "0.1.0"
+description = "Financial services data platform"
+authors = []
+packages = []
+
+[tool.poetry.dependencies]
+python = "^3.11"
+connectors = {path = "packages/connectors", develop = true}
+pipeline = {path = "packages/pipeline", develop = true}
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.2"
+ruff = "^0.4"
+testcontainers = {extras = ["postgres"], version = "^4.7"}
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP"]
+
+[tool.pytest.ini_options]
+markers = ["integration: requires a running Postgres instance"]

@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "pipeline"
+version = "0.1.0"
+description = "Dagster pipeline for financial data platform"
+authors = []
+packages = [{include = "pipeline", from = "src"}]
+include = ["sql/**/*.sql", "config/**/*.yaml"]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+dagster = "^1.9"
+dagster-webserver = "^1.9"
+pandas = "^2.2"
+sqlalchemy = "^2.0"
+psycopg2-binary = "^2.9"
+pydantic-settings = "^2.3"
+pyyaml = "^6.0"
+faker = "^25"
+connectors = {path = "../../packages/connectors", develop = true}
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

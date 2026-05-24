@@ -1,0 +1,9 @@
+display_name: Demo Corp
+source:
+  connector_type: sqlite
+  dsn: "sqlite:///data/demo_source.db"
+  queries: [customers, transactions]
+postgres_schema_prefix: demo
+schedules:
+  bronze_refresh: "0 6 * * *"
+pipelines: [customers, transactions]
